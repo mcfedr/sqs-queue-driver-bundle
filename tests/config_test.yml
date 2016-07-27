@@ -7,19 +7,21 @@ framework:
 mcfedr_queue_manager:
     managers:
         default:
-            driver: resque
+            driver: sqs
             options:
-                host: 127.0.0.1
-                port: 1234
-                default_queue: mcfedr_queue
+                default_url: 'http://sqs.com'
+                region: 'eu-west-1'
+                debug: true
 
 monolog:
     handlers:
         main:
             type: console
+            verbosity_levels:
+                VERBOSITY_NORMAL: DEBUG
 
 services:
     test_worker:
-        class: Mcfedr\ResqueQueueDriverBundle\Worker\TestWorker
+        class: Mcfedr\SqsQueueDriverBundle\Worker\TestWorker
         arguments:
             - "@logger"

@@ -7,12 +7,13 @@
         "psr-4": { "Mcfedr\\SqsQueueDriverBundle\\": "src/Mcfedr/SqsQueueDriverBundle/"}
     },
     "autoload-dev": {
-        "psr-4": { "Mcfedr\\SqsQueueDriverBundle\\" : "tests/Mcfedr/SqsQueueDriverBundle/" }
+        "psr-4": { "Mcfedr\\SqsQueueDriverBundle\\" : "tests/Mcfedr/SqsQueueDriverBundle/" },
+        "classmap": ["tests/TestKernel.php"]
     },
     "require": {
         "php": ">=5.5",
         "symfony/symfony": "^2.8|^3.0",
-        "mcfedr/queue-manager-bundle": "^2.2",
+        "mcfedr/queue-manager-bundle": "dev-adding-runner",
         "aws/aws-sdk-php": "^3.15"
     },
     "require-dev": {
