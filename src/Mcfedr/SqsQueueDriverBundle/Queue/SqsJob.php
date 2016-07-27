@@ -25,6 +25,11 @@ class SqsJob extends AbstractJob
     private $url;
 
     /**
+     * @var string
+     */
+    private $receiptHandle;
+
+    /**
      * ResqueJob constructor.
      * @param string $name
      * @param array $arguments
@@ -33,12 +38,13 @@ class SqsJob extends AbstractJob
      * @param int $delay
      * @param string $url
      */
-    public function __construct($name, $arguments, $options, $id, $delay, $url)
+    public function __construct($name, $arguments, $options, $id, $delay, $url, $receiptHandle = null)
     {
         parent::__construct($name, $arguments, $options);
         $this->id = $id;
         $this->delay = $delay;
         $this->url = $url;
+        $this->receiptHandle = $receiptHandle;
     }
 
     /**
@@ -63,5 +69,13 @@ class SqsJob extends AbstractJob
     public function getDelay()
     {
         return $this->delay;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReceiptHandle()
+    {
+        return $this->receiptHandle;
     }
 }

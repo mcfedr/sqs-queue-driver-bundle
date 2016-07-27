@@ -6,7 +6,10 @@
 namespace Mcfedr\SqsQueueDriverBundle\Command;
 
 use Mcfedr\QueueManagerBundle\Command\RunnerCommand;
+use Mcfedr\QueueManagerBundle\Exception\UnexpectedJobDataException;
+use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\SqsQueueDriverBundle\Manager\SqsClientTrait;
+use Mcfedr\SqsQueueDriverBundle\Manager\SqsQueueManager;
 use Mcfedr\SqsQueueDriverBundle\Queue\SqsJob;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,9 +20,9 @@ class SqsRunnerCommand extends RunnerCommand
 
     private $visibilityTimeout = 30;
 
-    public function __construct($name, array $options)
+    public function __construct($name, array $options, SqsQueueManager $queueManager)
     {
-        parent::__construct($name, $options);
+        parent::__construct($name, $options, $queueManager);
         $this->setOptions($options);
     }
 
@@ -33,6 +36,10 @@ class SqsRunnerCommand extends RunnerCommand
 
     protected function getJob()
     {
+        if ($this->debug) {
+            return null;
+        }
+
         $response = $this->sqs->receiveMessage([
             'QueueUrl' => $this->defaultUrl,
             'WaitTimeSeconds' => 20,
@@ -46,13 +53,30 @@ class SqsRunnerCommand extends RunnerCommand
             if (!(isset($data['name']) && isset($data['arguments']))) {
                 throw new UnexpectedJobDataException();
             }
-            return new SqsJob($data['name'], $data['arguments'], [], $message['MessageId'], 0, $this->defaultUrl);
+            return new SqsJob($data['name'], $data['arguments'], [], $message['MessageId'], 0, $this->defaultUrl, $message['ReceiptHandle']);
         }
-        
+
         return null;
     }
 
-    protected function setInput(InputInterface $input)
+    protected function finishJob(Job $job)
+    {
+        if (!$job instanceof SqsJob) {
+            //This shouldn't happen
+            return;
+        }
+
+        if ($this->debug) {
+            return;
+        }
+
+        $this->sqs->deleteMessage([
+            'QueueUrl' => $job->getUrl(),
+            'ReceiptHandle' => $job->getReceiptHandle()
+        ]);
+    }
+
+    protected function handleInput(InputInterface $input)
     {
         if (($url = $input->getOption('url'))) {
             $this->defaultUrl = $url;
