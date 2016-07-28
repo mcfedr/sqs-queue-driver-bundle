@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4b067cf0191cd45d7c746ca3e6c27ee0",
-    "content-hash": "3a7199d1a07e5244bcc1115c8efc0015",
+    "hash": "0273e0c9c056166d589b5d38f380f690",
+    "content-hash": "f76435d8ac26c61f17fdf23dd2d6c469",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -658,16 +658,16 @@
         },
         {
             "name": "mcfedr/queue-manager-bundle",
-            "version": "dev-adding-runner",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mcfedr/queue-manager-bundle.git",
-                "reference": "72f8419813b57306bbc1a52818ba400ccc8e4b00"
+                "reference": "26500d6529012ed2138fdbb4b10f89ffc94b7f71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mcfedr/queue-manager-bundle/zipball/72f8419813b57306bbc1a52818ba400ccc8e4b00",
-                "reference": "72f8419813b57306bbc1a52818ba400ccc8e4b00",
+                "url": "https://api.github.com/repos/mcfedr/queue-manager-bundle/zipball/26500d6529012ed2138fdbb4b10f89ffc94b7f71",
+                "reference": "26500d6529012ed2138fdbb4b10f89ffc94b7f71",
                 "shasum": ""
             },
             "require": {
@@ -676,11 +676,12 @@
             },
             "require-dev": {
                 "phpunit/phpunit": "^4.1",
-                "symfony/monolog-bundle": "^2.8"
+                "symfony/monolog-bundle": "^2.8|^3.0"
             },
             "suggest": {
                 "mcfedr/beanstalk-queue-driver-bundle": "A driver for beanstalkd",
-                "mcfedr/resque-queue-driver-bundle": "A driver for resque"
+                "mcfedr/resque-queue-driver-bundle": "A driver for resque",
+                "mcfedr/sqs-queue-driver-bundle": "A driver for SQS"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -706,7 +707,7 @@
                 "schedule",
                 "task"
             ],
-            "time": "2016-07-27 14:31:53"
+            "time": "2016-07-28 06:03:45"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -2621,9 +2622,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "mcfedr/queue-manager-bundle": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
