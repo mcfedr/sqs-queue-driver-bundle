@@ -7,6 +7,8 @@ namespace Mcfedr\SqsQueueDriverBundle\Command;
 
 use Mcfedr\QueueManagerBundle\Command\RunnerCommand;
 use Mcfedr\QueueManagerBundle\Exception\UnexpectedJobDataException;
+use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
+use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManager;
 use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\SqsQueueDriverBundle\Manager\SqsClientTrait;
@@ -78,8 +80,7 @@ class SqsRunnerCommand extends RunnerCommand
     protected function finishJob(Job $job)
     {
         if (!$job instanceof SqsJob) {
-            //This shouldn't happen
-            return;
+            throw new WrongJobException('Sqs runner should only finish sqs jobs');
         }
 
         if ($this->debug) {
@@ -90,6 +91,19 @@ class SqsRunnerCommand extends RunnerCommand
             'QueueUrl' => $job->getUrl(),
             'ReceiptHandle' => $job->getReceiptHandle()
         ]);
+    }
+
+    protected function failedJob(Job $job, \Exception $exception)
+    {
+        if (!$job instanceof SqsJob) {
+            throw new WrongJobException('Sqs runner should only fail sqs jobs');
+        }
+
+        if ($job->isRetrying()) {
+            return;
+        }
+
+        $this->finishJob($job);
     }
 
     protected function handleInput(InputInterface $input)

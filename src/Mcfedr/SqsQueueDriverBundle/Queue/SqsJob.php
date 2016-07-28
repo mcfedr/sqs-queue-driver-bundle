@@ -5,9 +5,9 @@
 
 namespace Mcfedr\SqsQueueDriverBundle\Queue;
 
-use Mcfedr\QueueManagerBundle\Queue\AbstractJob;
+use Mcfedr\QueueManagerBundle\Queue\AbstractRetryableJob;
 
-class SqsJob extends AbstractJob
+class SqsJob extends AbstractRetryableJob
 {
     /**
      * @var string
@@ -28,6 +28,11 @@ class SqsJob extends AbstractJob
      * @var string
      */
     private $receiptHandle;
+
+    /**
+     * @var boolean
+     */
+    private $retrying = false;
 
     /**
      * ResqueJob constructor.
@@ -78,5 +83,23 @@ class SqsJob extends AbstractJob
     public function getReceiptHandle()
     {
         return $this->receiptHandle;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRetrying()
+    {
+        return $this->retrying;
+    }
+
+    /**
+     * @param boolean $retrying
+     * @return SqsJob
+     */
+    public function setRetrying($retrying)
+    {
+        $this->retrying = $retrying;
+        return $this;
     }
 }
