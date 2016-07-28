@@ -34,6 +34,9 @@ trait SqsClientTrait
         $this->defaultUrl = $options['default_url'];
         $this->debug = $options['debug'];
         $this->queues = $options['queues'];
+        if (!array_key_exists('default', $this->queues)) {
+            $this->queues['default'] = $this->defaultUrl;
+        }
         if (!$this->debug) {
             $sqsOptions = [
                 'region' => $options['region'],
