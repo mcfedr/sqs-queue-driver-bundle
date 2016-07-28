@@ -48,8 +48,9 @@ class SqsRunnerCommand extends RunnerCommand
             return null;
         }
 
+        $waitTime = count($this->urls) ? 0 : 20;
         foreach ($this->urls as $url) {
-            $job = $this->getJobFromUrl($url);
+            $job = $this->getJobFromUrl($url, $waitTime);
             if ($job) {
                 return $job;
             }
@@ -58,11 +59,11 @@ class SqsRunnerCommand extends RunnerCommand
         return null;
     }
 
-    private function getJobFromUrl($url)
+    private function getJobFromUrl($url, $waitTime)
     {
         $response = $this->sqs->receiveMessage([
             'QueueUrl' => $url,
-            'WaitTimeSeconds' => 20,
+            'WaitTimeSeconds' => $waitTime,
             'VisibilityTimeout' => $this->visibilityTimeout,
             'MaxNumberOfMessages' => 1
         ]);
