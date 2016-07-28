@@ -5,6 +5,7 @@
 
 namespace Mcfedr\SqsQueueDriverBundle\Manager;
 
+use Mcfedr\QueueManagerBundle\Exception\NoSuchJobException;
 use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManager;
 use Mcfedr\QueueManagerBundle\Queue\Job;
@@ -66,6 +67,6 @@ class SqsQueueManager implements QueueManager
             throw new WrongJobException('Sqs queue manager can only delete sqs jobs');
         }
 
-        throw new WrongJobException('Sqs queue manager cannot delete jobs');
+        throw new NoSuchJobException('Sqs queue manager cannot delete jobs');
     }
 }

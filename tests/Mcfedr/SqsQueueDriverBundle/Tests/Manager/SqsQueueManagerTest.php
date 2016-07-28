@@ -5,6 +5,7 @@
 
 namespace Mcfedr\SqsQueueDriverBundle\Tests\Manager;
 
+use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\SqsQueueDriverBundle\Manager\SqsQueueManager;
 use Mcfedr\SqsQueueDriverBundle\Queue\SqsJob;
 
@@ -31,10 +32,18 @@ class SqsQueueManagerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Mcfedr\QueueManagerBundle\Exception\WrongJobException
+     * @expectedException \Mcfedr\QueueManagerBundle\Exception\NoSuchJobException
      */
     public function testDelete()
     {
         $this->manager->delete(new SqsJob('test_worker', [], [], null, 0, 'url'));
+    }
+
+    /**
+     * @expectedException \Mcfedr\QueueManagerBundle\Exception\WrongJobException
+     */
+    public function testDeleteOther()
+    {
+        $this->manager->delete($this->getMockBuilder(Job::class)->getMock());
     }
 }
