@@ -39,7 +39,9 @@ class McfedrSqsQueueDriverExtension extends Extension implements PrependExtensio
                 'drivers' => [
                     'sqs' => [
                         'class' => SqsQueueManager::class,
-                        'options' => [],
+                        'options' => [
+                            'queues' => []
+                        ],
                         'command_class' => SqsRunnerCommand::class
                     ]
                 ]

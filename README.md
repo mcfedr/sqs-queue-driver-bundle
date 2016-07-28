@@ -36,6 +36,9 @@ With this bundle installed you can setup your queue manager config similar to th
                     credentials:
                         key: 'my-access-key-id'
                         secret: 'my-secret-access-key'
+                    queues:
+                        name: https://sqs.eu-west-1.amazonaws.com/...
+                        name2: https://sqs.eu-west-1.amazonaws.com/...
 
 This will create a `QueueManager` service named `"mcfedr_queue_manager.default"`
 
@@ -43,7 +46,9 @@ This will create a `QueueManager` service named `"mcfedr_queue_manager.default"`
 * `region` **required** - The region where your queue is
 * `credentials` *optional* - [Specify your key and secret](http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html#using-hard-coded-credentials)
   This is optional because the SDK can pick up your credentials from a [variety of places](http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/credentials.html)
+* `queues` *optional* - Allows you to setup a mapping of short names for queues, this makes it easier to use multiple queues and keep the config in one place
 
 ## Options to `QueueManager::put`
 
 * `url` - A `string` with the url of a queue
+* `queue` - A `string` with the name of a queue in the config

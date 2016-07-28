@@ -7,9 +7,9 @@ namespace Mcfedr\SqsQueueDriverBundle\Command;
 
 use Mcfedr\QueueManagerBundle\Command\RunnerCommand;
 use Mcfedr\QueueManagerBundle\Exception\UnexpectedJobDataException;
+use Mcfedr\QueueManagerBundle\Manager\QueueManager;
 use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\SqsQueueDriverBundle\Manager\SqsClientTrait;
-use Mcfedr\SqsQueueDriverBundle\Manager\SqsQueueManager;
 use Mcfedr\SqsQueueDriverBundle\Queue\SqsJob;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,7 +20,12 @@ class SqsRunnerCommand extends RunnerCommand
 
     private $visibilityTimeout = 30;
 
-    public function __construct($name, array $options, SqsQueueManager $queueManager)
+    /**
+     * @var string[]
+     */
+    private $urls;
+
+    public function __construct($name, array $options, QueueManager $queueManager)
     {
         parent::__construct($name, $options, $queueManager);
         $this->setOptions($options);
@@ -30,7 +35,8 @@ class SqsRunnerCommand extends RunnerCommand
     {
         parent::configure();
         $this
-            ->addOption('url', null, InputOption::VALUE_REQUIRED, 'The url of SQS queue to run')
+            ->addOption('url', null, InputOption::VALUE_REQUIRED, 'The url of SQS queue to run, can be a comma separated list')
+            ->addOption('queue', null, InputOption::VALUE_REQUIRED, 'The name of a queue in the config, can be a comma separated list')
             ->addOption('timeout', null, InputOption::VALUE_REQUIRED, 'The visibility timeout for SQS');
     }
 
@@ -40,8 +46,20 @@ class SqsRunnerCommand extends RunnerCommand
             return null;
         }
 
+        foreach ($this->urls as $url) {
+            $job = $this->getJobFromUrl($url);
+            if ($job) {
+                return $job;
+            }
+        }
+
+        return null;
+    }
+
+    private function getJobFromUrl($url)
+    {
         $response = $this->sqs->receiveMessage([
-            'QueueUrl' => $this->defaultUrl,
+            'QueueUrl' => $url,
             'WaitTimeSeconds' => 20,
             'VisibilityTimeout' => $this->visibilityTimeout,
             'MaxNumberOfMessages' => 1
@@ -53,10 +71,8 @@ class SqsRunnerCommand extends RunnerCommand
             if (!(isset($data['name']) && isset($data['arguments']))) {
                 throw new UnexpectedJobDataException();
             }
-            return new SqsJob($data['name'], $data['arguments'], [], $message['MessageId'], 0, $this->defaultUrl, $message['ReceiptHandle']);
+            return new SqsJob($data['name'], $data['arguments'], [], $message['MessageId'], 0, $url, $message['ReceiptHandle']);
         }
-
-        return null;
     }
 
     protected function finishJob(Job $job)
@@ -79,7 +95,13 @@ class SqsRunnerCommand extends RunnerCommand
     protected function handleInput(InputInterface $input)
     {
         if (($url = $input->getOption('url'))) {
-            $this->defaultUrl = $url;
+            $this->urls = explode(',', $url);
+        } else if (($queue = $input->getOption('queue'))) {
+            $this->urls = array_map(function($queue) {
+                return $this->queues[$queue];
+            }, explode(',', $queue));
+        } else {
+            $this->urls = [$this->defaultUrl];
         }
 
         if (($timeout = $input->getOption('timeout'))) {

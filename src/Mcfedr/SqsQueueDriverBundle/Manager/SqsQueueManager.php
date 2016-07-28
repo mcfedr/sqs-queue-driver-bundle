@@ -27,7 +27,13 @@ class SqsQueueManager implements QueueManager
      */
     public function put($name, array $arguments = [], array $options = [])
     {
-        $url = isset($options['url']) ? $options['url'] : $this->defaultUrl;
+        if (array_key_exists('url', $options)) {
+            $url = $options['url'];
+        } else if (array_key_exists('queue', $options)) {
+            $url = $this->queues[$options['queue']];
+        } else {
+            $url = $this->defaultUrl;
+        }
 
         $sendMessage = [
             'QueueUrl' => $url,

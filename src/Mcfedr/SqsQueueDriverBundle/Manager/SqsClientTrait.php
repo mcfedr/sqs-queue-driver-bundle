@@ -24,10 +24,16 @@ trait SqsClientTrait
      */
     private $sqs;
 
+    /**
+     * @var string[]
+     */
+    private $queues;
+
     private function setOptions(array $options)
     {
         $this->defaultUrl = $options['default_url'];
         $this->debug = $options['debug'];
+        $this->queues = $options['queues'];
         if (!$this->debug) {
             $sqsOptions = [
                 'region' => $options['region'],
