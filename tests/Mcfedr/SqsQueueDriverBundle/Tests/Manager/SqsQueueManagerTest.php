@@ -18,7 +18,8 @@ class SqsQueueManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager = new SqsQueueManager([
             'default_url' => 'http://sqs.com',
             'region' => 'eu-west-1',
-            'debug' => true
+            'debug' => true,
+            'queues' => []
         ]);
     }
 
