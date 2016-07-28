@@ -37,6 +37,7 @@ class SqsJob extends AbstractJob
      * @param string $id
      * @param int $delay
      * @param string $url
+     * @param string $receiptHandle
      */
     public function __construct($name, $arguments, $options, $id, $delay, $url, $receiptHandle = null)
     {

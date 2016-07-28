@@ -82,8 +82,8 @@ class SqsRunnerCommand extends RunnerCommand
             $this->defaultUrl = $url;
         }
 
-        if (($timout = $input->getOption('timeout'))) {
-            $this->visibilityTimeout = $timout;
+        if (($timeout = $input->getOption('timeout'))) {
+            $this->visibilityTimeout = $timeout;
         }
     }
 }

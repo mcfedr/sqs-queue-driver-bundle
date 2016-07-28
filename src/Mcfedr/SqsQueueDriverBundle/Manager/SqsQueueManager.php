@@ -5,7 +5,6 @@
 
 namespace Mcfedr\SqsQueueDriverBundle\Manager;
 
-use Aws\Sqs\SqsClient;
 use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManager;
 use Mcfedr\QueueManagerBundle\Queue\Job;
