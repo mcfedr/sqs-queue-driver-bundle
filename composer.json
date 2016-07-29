@@ -20,6 +20,9 @@
         "phpunit/phpunit": "^4.1",
         "symfony/monolog-bundle": "^2.8|^3.0"
     },
+    "suggest": {
+        "mcfedr/doctrine-delay-queue-driver-bundle": "A driver to delay tasks, useful with sqs"
+    },
     "authors": [
         {
             "name": "Fred Cox",
