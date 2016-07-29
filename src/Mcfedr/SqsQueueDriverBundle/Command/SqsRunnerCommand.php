@@ -17,7 +17,15 @@ class SqsRunnerCommand extends RunnerCommand
 {
     use SqsClientTrait;
 
+    /**
+     * @var int
+     */
     private $visibilityTimeout = 30;
+
+    /**
+     * @var int
+     */
+    private $batchSize = 10;
 
     /**
      * @var string[]
@@ -36,7 +44,8 @@ class SqsRunnerCommand extends RunnerCommand
         $this
             ->addOption('url', null, InputOption::VALUE_REQUIRED, 'The url of SQS queue to run, can be a comma separated list')
             ->addOption('queue', null, InputOption::VALUE_REQUIRED, 'The name of a queue in the config, can be a comma separated list')
-            ->addOption('timeout', null, InputOption::VALUE_REQUIRED, 'The visibility timeout for SQS');
+            ->addOption('timeout', null, InputOption::VALUE_REQUIRED, 'The visibility timeout for SQS')
+            ->addOption('batchSize', null, InputOption::VALUE_REQUIRED, 'Number of messages to fetch at once', 10);
     }
 
     protected function getJobs()
@@ -62,7 +71,7 @@ class SqsRunnerCommand extends RunnerCommand
             'QueueUrl' => $url,
             'WaitTimeSeconds' => $waitTime,
             'VisibilityTimeout' => $this->visibilityTimeout,
-            'MaxNumberOfMessages' => 20
+            'MaxNumberOfMessages' => $this->batchSize
         ]);
 
         if (isset($response['Messages'])) {
@@ -117,6 +126,10 @@ class SqsRunnerCommand extends RunnerCommand
 
         if (($timeout = $input->getOption('timeout'))) {
             $this->visibilityTimeout = $timeout;
+        }
+
+        if (($batch = $input->getOption('batchSize'))) {
+            $this->batchSize = $batch;
         }
     }
 }
