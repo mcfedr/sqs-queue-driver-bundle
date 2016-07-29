@@ -7,12 +7,11 @@ namespace Mcfedr\SqsQueueDriverBundle\Manager;
 
 use Mcfedr\QueueManagerBundle\Exception\NoSuchJobException;
 use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
-use Mcfedr\QueueManagerBundle\Manager\RetryingQueueManager;
+use Mcfedr\QueueManagerBundle\Manager\QueueManager;
 use Mcfedr\QueueManagerBundle\Queue\Job;
-use Mcfedr\QueueManagerBundle\Queue\RetryableJob;
 use Mcfedr\SqsQueueDriverBundle\Queue\SqsJob;
 
-class SqsQueueManager implements RetryingQueueManager
+class SqsQueueManager implements QueueManager
 {
     use SqsClientTrait;
 
@@ -69,22 +68,5 @@ class SqsQueueManager implements RetryingQueueManager
         }
 
         throw new NoSuchJobException('Sqs queue manager cannot delete jobs');
-    }
-
-    /**
-     * Called by RunnerCommand to reschedule a job that failed
-     * Responsible for increasing the retryCount in the Job
-     *
-     * @param RetryableJob $job
-     * @param \Exception $exception The exception that caused the job to fail
-     * @throws WrongJobException
-     */
-    public function retry(RetryableJob $job, \Exception $exception = null)
-    {
-        if (!$job instanceof SqsJob) {
-            throw new WrongJobException('Sqs queue manager can only retry sqs jobs');
-        }
-
-        $job->setRetrying(true);
     }
 }

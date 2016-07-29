@@ -30,11 +30,6 @@ class SqsJob extends AbstractRetryableJob
     private $receiptHandle;
 
     /**
-     * @var boolean
-     */
-    private $retrying = false;
-
-    /**
      * ResqueJob constructor.
      * @param string $name
      * @param array $arguments
@@ -83,23 +78,5 @@ class SqsJob extends AbstractRetryableJob
     public function getReceiptHandle()
     {
         return $this->receiptHandle;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isRetrying()
-    {
-        return $this->retrying;
-    }
-
-    /**
-     * @param boolean $retrying
-     * @return SqsJob
-     */
-    public function setRetrying($retrying)
-    {
-        $this->retrying = $retrying;
-        return $this;
     }
 }

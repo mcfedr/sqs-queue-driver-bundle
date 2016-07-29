@@ -13,7 +13,7 @@
     "require": {
         "php": ">=5.5",
         "symfony/symfony": "^2.8|^3.0",
-        "mcfedr/queue-manager-bundle": "^3.3.2",
+        "mcfedr/queue-manager-bundle": "^4.0",
         "aws/aws-sdk-php": "^3.15"
     },
     "require-dev": {

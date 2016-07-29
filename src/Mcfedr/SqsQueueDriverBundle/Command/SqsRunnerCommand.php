@@ -7,10 +7,7 @@ namespace Mcfedr\SqsQueueDriverBundle\Command;
 
 use Mcfedr\QueueManagerBundle\Command\RunnerCommand;
 use Mcfedr\QueueManagerBundle\Exception\UnexpectedJobDataException;
-use Mcfedr\QueueManagerBundle\Exception\UnrecoverableJobException;
-use Mcfedr\QueueManagerBundle\Exception\WrongJobException;
 use Mcfedr\QueueManagerBundle\Manager\QueueManager;
-use Mcfedr\QueueManagerBundle\Queue\Job;
 use Mcfedr\SqsQueueDriverBundle\Manager\SqsClientTrait;
 use Mcfedr\SqsQueueDriverBundle\Queue\SqsJob;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,69 +39,68 @@ class SqsRunnerCommand extends RunnerCommand
             ->addOption('timeout', null, InputOption::VALUE_REQUIRED, 'The visibility timeout for SQS');
     }
 
-    protected function getJob()
+    protected function getJobs()
     {
         if ($this->debug) {
-            return null;
+            return [];
         }
 
         $waitTime = count($this->urls) ? 0 : 20;
         foreach ($this->urls as $url) {
-            $job = $this->getJobFromUrl($url, $waitTime);
-            if ($job) {
-                return $job;
+            $jobs = $this->getJobsFromUrl($url, $waitTime);
+            if (count($jobs)) {
+                return $jobs;
             }
         }
 
-        return null;
+        return [];
     }
 
-    private function getJobFromUrl($url, $waitTime)
+    private function getJobsFromUrl($url, $waitTime)
     {
         $response = $this->sqs->receiveMessage([
             'QueueUrl' => $url,
             'WaitTimeSeconds' => $waitTime,
             'VisibilityTimeout' => $this->visibilityTimeout,
-            'MaxNumberOfMessages' => 1
+            'MaxNumberOfMessages' => 20
         ]);
 
-        if (isset($response['Messages']) && count($response['Messages'])) {
-            $message = $response['Messages'][0];
-            $data = json_decode($message['Body'], true);
-            if (!(isset($data['name']) && isset($data['arguments']))) {
-                throw new UnexpectedJobDataException();
-            }
-            return new SqsJob($data['name'], $data['arguments'], [], $message['MessageId'], 0, $url, $message['ReceiptHandle']);
+        if (isset($response['Messages'])) {
+            return array_map(function($message) use($url) {
+                $data = json_decode($message['Body'], true);
+                if (!(isset($data['name']) && isset($data['arguments']))) {
+                    throw new UnexpectedJobDataException();
+                }
+                return new SqsJob($data['name'], $data['arguments'], [], $message['MessageId'], 0, $url, $message['ReceiptHandle']);
+            }, $response['Messages']);
         }
+
+        return [];
     }
 
-    protected function finishJob(Job $job)
+    protected function finishJobs(array $okJobs, array $retryJobs, array $failedJobs)
     {
-        if (!$job instanceof SqsJob) {
-            throw new WrongJobException('Sqs runner should only finish sqs jobs');
-        }
-
         if ($this->debug) {
             return;
         }
 
-        $this->sqs->deleteMessage([
-            'QueueUrl' => $job->getUrl(),
-            'ReceiptHandle' => $job->getReceiptHandle()
-        ]);
-    }
+        //$retryJobs are not deleted and will be recycled by sqs
 
-    protected function failedJob(Job $job, \Exception $exception)
-    {
-        if (!$job instanceof SqsJob) {
-            throw new WrongJobException('Sqs runner should only fail sqs jobs');
+        /** @var SqsJob $job */
+        foreach ($okJobs as $job) {
+            $this->sqs->deleteMessage([
+                'QueueUrl' => $job->getUrl(),
+                'ReceiptHandle' => $job->getReceiptHandle()
+            ]);
         }
 
-        if ($job->isRetrying()) {
-            return;
+        /** @var SqsJob $job */
+        foreach ($failedJobs as $job) {
+            $this->sqs->deleteMessage([
+                'QueueUrl' => $job->getUrl(),
+                'ReceiptHandle' => $job->getReceiptHandle()
+            ]);
         }
-
-        $this->finishJob($job);
     }
 
     protected function handleInput(InputInterface $input)
