@@ -75,23 +75,47 @@ class SqsRunnerCommand extends RunnerCommand
         ]);
 
         if (isset($response['Messages'])) {
-            return array_filter(array_map(function($message) use($url) {
+            $jobs = [];
+            $exception = null;
+            $toDelete = [];
+
+            /** @var array $message */
+            foreach ($response['Messages'] as $message) {
                 $data = json_decode($message['Body'], true);
-                if (!isset($data['name']) || !isset($data['arguments']) || !isset($data['retryCount'])) {
+                if (!is_array($data) || !isset($data['name']) || !isset($data['arguments']) || !isset($data['retryCount'])) {
                     $this->logger && $this->logger->warning('Found unexpected job data in the queue', [
                         'message' => 'Sqs message missing data fields name, arguments and retryCount',
                         'data' => $data
                     ]);
 
-                    $this->sqs->deleteMessage([
-                        'QueueUrl' => $url,
-                        'ReceiptHandle' => $message['ReceiptHandle']
-                    ]);
-                    
-                    return false;
+                    $toDelete[] = $message['ReceiptHandle'];
+                    $exception = new UnexpectedJobDataException('Sqs message missing data fields name, arguments and retryCount');
+                    continue;
                 }
-                return new SqsJob($data['name'], $data['arguments'], 0, $url, $message['MessageId'], $data['retryCount'], $message['ReceiptHandle']);
-            }, $response['Messages']));
+
+                $jobs[] = new SqsJob($data['name'], $data['arguments'], 0, $url, $message['MessageId'], $data['retryCount'], $message['ReceiptHandle']);
+            }
+
+            if (count($toDelete)) {
+                $count = 0;
+                $this->sqs->deleteMessageBatch([
+                    'QueueUrl' => $url,
+                    'Entries' => array_map(function ($handle) use (&$count) {
+                        $count++;
+
+                        return [
+                            'Id' => "E{$count}",
+                            'ReceiptHandle' => $handle
+                        ];
+                    }, $toDelete)
+                ]);
+            }
+
+            if (!count($jobs) && $exception) {
+                throw $exception;
+            }
+
+            return $jobs;
         }
 
         return [];
