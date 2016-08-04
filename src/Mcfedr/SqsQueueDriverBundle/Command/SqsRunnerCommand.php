@@ -83,13 +83,8 @@ class SqsRunnerCommand extends RunnerCommand
             foreach ($response['Messages'] as $message) {
                 $data = json_decode($message['Body'], true);
                 if (!is_array($data) || !isset($data['name']) || !isset($data['arguments']) || !isset($data['retryCount'])) {
-                    $this->logger && $this->logger->warning('Found unexpected job data in the queue', [
-                        'message' => 'Sqs message missing data fields name, arguments and retryCount',
-                        'data' => $data
-                    ]);
-
                     $toDelete[] = $message['ReceiptHandle'];
-                    $exception = new UnexpectedJobDataException('Sqs message missing data fields name, arguments and retryCount');
+                    $exception = new UnexpectedJobDataException('Sqs message(s) missing data fields name, arguments and retryCount');
                     continue;
                 }
 
@@ -111,8 +106,14 @@ class SqsRunnerCommand extends RunnerCommand
                 ]);
             }
 
-            if (!count($jobs) && $exception) {
-                throw $exception;
+            if ($exception) {
+                if (count($jobs)) {
+                    $this->logger && $this->logger->warning('Found unexpected job data in the queue', [
+                        'message' => $exception->getMessage()
+                    ]);
+                } else {
+                    throw $exception;
+                }
             }
 
             return $jobs;
