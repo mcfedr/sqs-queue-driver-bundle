@@ -75,13 +75,23 @@ class SqsRunnerCommand extends RunnerCommand
         ]);
 
         if (isset($response['Messages'])) {
-            return array_map(function($message) use($url) {
+            return array_filter(array_map(function($message) use($url) {
                 $data = json_decode($message['Body'], true);
                 if (!isset($data['name']) || !isset($data['arguments']) || !isset($data['retryCount'])) {
-                    throw new UnexpectedJobDataException('Sqs message missing data fields name, arguments and retryCount');
+                    $this->logger && $this->logger->warning('Found unexpected job data in the queue', [
+                        'message' => 'Sqs message missing data fields name, arguments and retryCount',
+                        'data' => $data
+                    ]);
+
+                    $this->sqs->deleteMessage([
+                        'QueueUrl' => $url,
+                        'ReceiptHandle' => $message['ReceiptHandle']
+                    ]);
+                    
+                    return false;
                 }
                 return new SqsJob($data['name'], $data['arguments'], 0, $url, $message['MessageId'], $data['retryCount'], $message['ReceiptHandle']);
-            }, $response['Messages']);
+            }, $response['Messages']));
         }
 
         return [];
