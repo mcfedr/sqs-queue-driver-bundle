@@ -77,10 +77,10 @@ class SqsRunnerCommand extends RunnerCommand
         if (isset($response['Messages'])) {
             return array_map(function($message) use($url) {
                 $data = json_decode($message['Body'], true);
-                if (!(isset($data['name']) && isset($data['arguments']))) {
-                    throw new UnexpectedJobDataException();
+                if (!isset($data['name']) || !isset($data['arguments']) || !isset($data['retryCount'])) {
+                    throw new UnexpectedJobDataException('Sqs message missing data fields name, arguments and retryCount');
                 }
-                return new SqsJob($data['name'], $data['arguments'], [], $message['MessageId'], 0, $url, $message['ReceiptHandle']);
+                return new SqsJob($data['name'], $data['arguments'], 0, $url, $message['MessageId'], $data['retryCount'], $message['ReceiptHandle']);
             }, $response['Messages']);
         }
 
@@ -93,21 +93,37 @@ class SqsRunnerCommand extends RunnerCommand
             return;
         }
 
-        //$retryJobs are not deleted and will be recycled by sqs
+        if (count($retryJobs)) {
+            $count = 0;
+            $this->sqs->sendMessageBatch([
+                'QueueUrl' => $retryJobs[0]->getUrl(),
+                'Entries' => array_map(function (SqsJob $job) use (&$count) {
+                    $count++;
+                    $job->incrementRetryCount();
 
-        /** @var SqsJob $job */
-        foreach ($okJobs as $job) {
-            $this->sqs->deleteMessage([
-                'QueueUrl' => $job->getUrl(),
-                'ReceiptHandle' => $job->getReceiptHandle()
+                    return [
+                        'Id' => "R{$count}",
+                        'MessageBody' => $job->getMessageBody(),
+                        'DelaySeconds' => min($job->getRetryCount() * $job->getRetryCount() * 30, 900) //900 is the max delay
+                    ];
+                }, $retryJobs)
             ]);
         }
 
-        /** @var SqsJob $job */
-        foreach ($failedJobs as $job) {
-            $this->sqs->deleteMessage([
-                'QueueUrl' => $job->getUrl(),
-                'ReceiptHandle' => $job->getReceiptHandle()
+        /** @var SqsJob[] $allJobs */
+        $allJobs = array_merge($okJobs, $retryJobs, $failedJobs);
+        if (count($allJobs)) {
+            $count = 0;
+            $this->sqs->deleteMessageBatch([
+                'QueueUrl' => $allJobs[0]->getUrl(),
+                'Entries' => array_map(function (SqsJob $job) use (&$count) {
+                    $count++;
+
+                    return [
+                        'Id' => "J{$count}",
+                        'ReceiptHandle' => $job->getReceiptHandle()
+                    ];
+                }, array_merge($okJobs, $retryJobs, $failedJobs))
             ]);
         }
     }

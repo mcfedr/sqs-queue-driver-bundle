@@ -15,17 +15,11 @@ class SqsQueueManager implements QueueManager
 {
     use SqsClientTrait;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(array $options)
     {
         $this->setOptions($options);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function put($name, array $arguments = [], array $options = [])
     {
         if (array_key_exists('url', $options)) {
@@ -37,30 +31,30 @@ class SqsQueueManager implements QueueManager
         }
 
         $sendMessage = [
-            'QueueUrl' => $url,
-            'MessageBody' => json_encode([
-                'name' => $name,
-                'arguments' => $arguments
-            ])
+            'QueueUrl' => $url
         ];
 
         $delay = null;
-        if (isset($options['delay'])) {
+        if (isset($options['time'])) {
+            $sendMessage['DelaySeconds'] = $delay = ($options['time']->getTimestamp() - time());
+        } else if (isset($options['delay'])) {
             $sendMessage['DelaySeconds'] = $delay = $options['delay'];
         }
 
-        $id = null;
-        if (!$this->debug) {
-            $result = $this->sqs->sendMessage($sendMessage);
-            $id = $result['MessageId'];
+        $job = new SqsJob($name, $arguments, $delay, $url);
+
+        if ($this->debug) {
+            return $job;
         }
 
-        return new SqsJob($name, $arguments, $options, $id, $delay, $url);
+        $sendMessage['MessageBody'] = $job->getMessageBody();
+
+        $result = $this->sqs->sendMessage($sendMessage);
+        $job->setId($result['MessageId']);
+
+        return $job;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function delete(Job $job)
     {
         if (!$job instanceof SqsJob) {

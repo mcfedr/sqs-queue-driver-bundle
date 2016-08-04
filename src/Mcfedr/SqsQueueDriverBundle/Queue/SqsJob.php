@@ -33,15 +33,15 @@ class SqsJob extends AbstractRetryableJob
      * ResqueJob constructor.
      * @param string $name
      * @param array $arguments
-     * @param array $options
      * @param string $id
      * @param int $delay
      * @param string $url
+     * @param int $retryCount
      * @param string $receiptHandle
      */
-    public function __construct($name, $arguments, $options, $id, $delay, $url, $receiptHandle = null)
+    public function __construct($name, $arguments, $delay, $url, $id = null, $retryCount = 0, $receiptHandle = null)
     {
-        parent::__construct($name, $arguments, $options);
+        parent::__construct($name, $arguments, $retryCount);
         $this->id = $id;
         $this->delay = $delay;
         $this->url = $url;
@@ -54,6 +54,16 @@ class SqsJob extends AbstractRetryableJob
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $id
+     * @return SqsJob
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**
@@ -78,5 +88,14 @@ class SqsJob extends AbstractRetryableJob
     public function getReceiptHandle()
     {
         return $this->receiptHandle;
+    }
+
+    public function getMessageBody()
+    {
+        return json_encode([
+            'name' => $this->getName(),
+            'arguments' => $this->getArguments(),
+            'retryCount' => $this->getRetryCount()
+        ]);
     }
 }
