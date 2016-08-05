@@ -52,3 +52,5 @@ This will create a `QueueManager` service named `"mcfedr_queue_manager.default"`
 
 * `url` - A `string` with the url of a queue
 * `queue` - A `string` with the name of a queue in the config
+* `time` - A `\DateTime` object of when to schedule this job. **Note:** SQS can delay jobs up to 15 minutes 
+* `delay` - Number of seconds from now to schedule this job. **Note:** SQS can delay jobs up to 15 minutes
