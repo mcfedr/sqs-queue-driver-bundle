@@ -45,7 +45,7 @@ class SqsRunnerCommand extends RunnerCommand
             ->addOption('url', null, InputOption::VALUE_REQUIRED, 'The url of SQS queue to run, can be a comma separated list')
             ->addOption('queue', null, InputOption::VALUE_REQUIRED, 'The name of a queue in the config, can be a comma separated list')
             ->addOption('timeout', null, InputOption::VALUE_REQUIRED, 'The visibility timeout for SQS')
-            ->addOption('batchSize', null, InputOption::VALUE_REQUIRED, 'Number of messages to fetch at once', 10);
+            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Number of messages to fetch at once', 10);
     }
 
     protected function getJobs()
@@ -179,7 +179,7 @@ class SqsRunnerCommand extends RunnerCommand
             $this->visibilityTimeout = $timeout;
         }
 
-        if (($batch = $input->getOption('batchSize'))) {
+        if (($batch = $input->getOption('batch-size'))) {
             $this->batchSize = $batch;
         }
     }
