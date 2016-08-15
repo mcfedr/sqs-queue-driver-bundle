@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "86ca8d6289156d8ddf746046b4aea1e8",
-    "content-hash": "175ea3a6050a492b50dd72bf61eeef90",
+    "hash": "487e4dfb4927f1014ac0687a91fc91ff",
+    "content-hash": "0b2cabfcda7c2a2bc151b4a54c28c9fa",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.18.36",
+            "version": "3.18.39",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "48362bce008fa9c20a71dfa6a68aebac65a8ab1b"
+                "reference": "85f1fddaeb40b95106b2a2764268e9c89fc258ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/48362bce008fa9c20a71dfa6a68aebac65a8ab1b",
-                "reference": "48362bce008fa9c20a71dfa6a68aebac65a8ab1b",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/85f1fddaeb40b95106b2a2764268e9c89fc258ce",
+                "reference": "85f1fddaeb40b95106b2a2764268e9c89fc258ce",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +85,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2016-08-02 20:49:01"
+            "time": "2016-08-11 16:40:35"
         },
         {
             "name": "doctrine/annotations",
@@ -658,16 +658,16 @@
         },
         {
             "name": "mcfedr/queue-manager-bundle",
-            "version": "5.0.1",
+            "version": "5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mcfedr/queue-manager-bundle.git",
-                "reference": "9331413748f034b6f7e872784e57af1b1c0b947f"
+                "reference": "f624a652617d14e2f55286e9639353bda4803f4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mcfedr/queue-manager-bundle/zipball/9331413748f034b6f7e872784e57af1b1c0b947f",
-                "reference": "9331413748f034b6f7e872784e57af1b1c0b947f",
+                "url": "https://api.github.com/repos/mcfedr/queue-manager-bundle/zipball/f624a652617d14e2f55286e9639353bda4803f4f",
+                "reference": "f624a652617d14e2f55286e9639353bda4803f4f",
                 "shasum": ""
             },
             "require": {
@@ -708,7 +708,7 @@
                 "schedule",
                 "task"
             ],
-            "time": "2016-08-04 13:19:39"
+            "time": "2016-08-15 08:37:34"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -815,16 +815,16 @@
         },
         {
             "name": "psr/cache",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/cache.git",
-                "reference": "9e66031f41fbbdda45ee11e93c45d480ccba3eb3"
+                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/cache/zipball/9e66031f41fbbdda45ee11e93c45d480ccba3eb3",
-                "reference": "9e66031f41fbbdda45ee11e93c45d480ccba3eb3",
+                "url": "https://api.github.com/repos/php-fig/cache/zipball/d11b50ad223250cf17b86e38383413f5a6764bf8",
+                "reference": "d11b50ad223250cf17b86e38383413f5a6764bf8",
                 "shasum": ""
             },
             "require": {
@@ -857,20 +857,20 @@
                 "psr",
                 "psr-6"
             ],
-            "time": "2015-12-11 02:52:07"
+            "time": "2016-08-06 20:24:11"
         },
         {
             "name": "psr/http-message",
-            "version": "1.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-message.git",
-                "reference": "85d63699f0dbedb190bbd4b0d2b9dc707ea4c298"
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-message/zipball/85d63699f0dbedb190bbd4b0d2b9dc707ea4c298",
-                "reference": "85d63699f0dbedb190bbd4b0d2b9dc707ea4c298",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
                 "shasum": ""
             },
             "require": {
@@ -898,6 +898,7 @@
                 }
             ],
             "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
             "keywords": [
                 "http",
                 "http-message",
@@ -906,7 +907,7 @@
                 "request",
                 "response"
             ],
-            "time": "2015-05-04 20:22:00"
+            "time": "2016-08-06 14:39:51"
         },
         {
             "name": "psr/log",
@@ -2574,28 +2575,29 @@
         },
         {
             "name": "webmozart/assert",
-            "version": "1.0.2",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "30eed06dd6bc88410a4ff7f77b6d22f3ce13dbde"
+                "reference": "bb2d123231c095735130cc8f6d31385a44c7b308"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/30eed06dd6bc88410a4ff7f77b6d22f3ce13dbde",
-                "reference": "30eed06dd6bc88410a4ff7f77b6d22f3ce13dbde",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/bb2d123231c095735130cc8f6d31385a44c7b308",
+                "reference": "bb2d123231c095735130cc8f6d31385a44c7b308",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": "^5.3.3|^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.6"
+                "phpunit/phpunit": "^4.6",
+                "sebastian/version": "^1.0.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0-dev"
+                    "dev-master": "1.2-dev"
                 }
             },
             "autoload": {
@@ -2619,7 +2621,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2015-08-24 13:29:44"
+            "time": "2016-08-09 15:02:57"
         }
     ],
     "aliases": [],

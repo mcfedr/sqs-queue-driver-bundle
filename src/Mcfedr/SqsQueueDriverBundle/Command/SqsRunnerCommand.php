@@ -139,7 +139,7 @@ class SqsRunnerCommand extends RunnerCommand
                     return [
                         'Id' => "R{$count}",
                         'MessageBody' => $job->getMessageBody(),
-                        'DelaySeconds' => min($job->getRetryCount() * $job->getRetryCount() * 30, 900) //900 is the max delay
+                        'DelaySeconds' => min($this->getRetryDelaySeconds($job->getRetryCount()), 900) //900 is the max delay
                     ];
                 }, $retryJobs)
             ]);
