@@ -1,7 +1,4 @@
 <?php
-/**
- * Created by mcfedr on 08/06/2016 23:37
- */
 
 namespace Mcfedr\SqsQueueDriverBundle\Manager;
 

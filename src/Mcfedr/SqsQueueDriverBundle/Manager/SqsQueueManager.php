@@ -1,7 +1,4 @@
 <?php
-/**
- * Created by mcfedr on 03/06/2014 21:50
- */
 
 namespace Mcfedr\SqsQueueDriverBundle\Manager;
 
@@ -24,7 +21,7 @@ class SqsQueueManager implements QueueManager
     {
         if (array_key_exists('url', $options)) {
             $url = $options['url'];
-        } else if (array_key_exists('queue', $options)) {
+        } elseif (array_key_exists('queue', $options)) {
             $url = $this->queues[$options['queue']];
         } else {
             $url = $this->defaultUrl;
@@ -37,7 +34,7 @@ class SqsQueueManager implements QueueManager
         $delay = null;
         if (isset($options['time'])) {
             $sendMessage['DelaySeconds'] = $delay = ($options['time']->getTimestamp() - time());
-        } else if (isset($options['delay'])) {
+        } elseif (isset($options['delay'])) {
             $sendMessage['DelaySeconds'] = $delay = $options['delay'];
         }
 

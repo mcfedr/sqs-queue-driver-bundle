@@ -1,7 +1,4 @@
 <?php
-/**
- * Created by mcfedr on 03/06/2014 22:02
- */
 
 namespace Mcfedr\SqsQueueDriverBundle\Queue;
 
@@ -30,13 +27,12 @@ class SqsJob extends AbstractRetryableJob
     private $receiptHandle;
 
     /**
-     * ResqueJob constructor.
      * @param string $name
-     * @param array $arguments
+     * @param array  $arguments
      * @param string $id
-     * @param int $delay
+     * @param int    $delay
      * @param string $url
-     * @param int $retryCount
+     * @param int    $retryCount
      * @param string $receiptHandle
      */
     public function __construct($name, $arguments, $delay, $url, $id = null, $retryCount = 0, $receiptHandle = null)
@@ -58,11 +54,13 @@ class SqsJob extends AbstractRetryableJob
 
     /**
      * @param string $id
+     *
      * @return SqsJob
      */
     public function setId($id)
     {
         $this->id = $id;
+
         return $this;
     }
 

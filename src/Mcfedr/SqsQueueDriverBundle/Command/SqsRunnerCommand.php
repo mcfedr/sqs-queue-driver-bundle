@@ -1,7 +1,4 @@
 <?php
-/**
- * Created by mcfedr on 05/03/2016 15:45
- */
 
 namespace Mcfedr\SqsQueueDriverBundle\Command;
 
@@ -96,7 +93,7 @@ class SqsRunnerCommand extends RunnerCommand
                 $this->sqs->deleteMessageBatch([
                     'QueueUrl' => $url,
                     'Entries' => array_map(function ($handle) use (&$count) {
-                        $count++;
+                        ++$count;
 
                         return [
                             'Id' => "E{$count}",
@@ -133,7 +130,7 @@ class SqsRunnerCommand extends RunnerCommand
             $this->sqs->sendMessageBatch([
                 'QueueUrl' => $retryJobs[0]->getUrl(),
                 'Entries' => array_map(function (SqsJob $job) use (&$count) {
-                    $count++;
+                    ++$count;
                     $job->incrementRetryCount();
 
                     return [
@@ -152,7 +149,7 @@ class SqsRunnerCommand extends RunnerCommand
             $this->sqs->deleteMessageBatch([
                 'QueueUrl' => $allJobs[0]->getUrl(),
                 'Entries' => array_map(function (SqsJob $job) use (&$count) {
-                    $count++;
+                    ++$count;
 
                     return [
                         'Id' => "J{$count}",
@@ -167,8 +164,8 @@ class SqsRunnerCommand extends RunnerCommand
     {
         if (($url = $input->getOption('url'))) {
             $this->urls = explode(',', $url);
-        } else if (($queue = $input->getOption('queue'))) {
-            $this->urls = array_map(function($queue) {
+        } elseif (($queue = $input->getOption('queue'))) {
+            $this->urls = array_map(function ($queue) {
                 return $this->queues[$queue];
             }, explode(',', $queue));
         } else {

@@ -1,7 +1,4 @@
 <?php
-/**
- * Created by mcfedr on 04/02/2016 10:22
- */
 
 namespace Mcfedr\SqsQueueDriverBundle\Tests\Manager;
 
@@ -11,7 +8,9 @@ use Mcfedr\SqsQueueDriverBundle\Queue\SqsJob;
 
 class SqsQueueManagerTest extends \PHPUnit_Framework_TestCase
 {
-    /** @var SqsQueueManager */
+    /**
+     * @var SqsQueueManager
+     */
     protected $manager;
 
     public function setUp()

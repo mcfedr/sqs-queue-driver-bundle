@@ -4,6 +4,7 @@ A driver for [Queue Manager Bundle](https://github.com/mcfedr/queue-manager-bund
 
 [![Latest Stable Version](https://poser.pugx.org/mcfedr/sqs-queue-driver-bundle/v/stable.png)](https://packagist.org/packages/mcfedr/sqs-queue-driver-bundle)
 [![License](https://poser.pugx.org/mcfedr/sqs-queue-driver-bundle/license.png)](https://packagist.org/packages/mcfedr/sqs-queue-driver-bundle)
+[![Build Status](https://travis-ci.org/mcfedr/sqs-queue-driver-bundle.svg?branch=master)](https://travis-ci.org/mcfedr/sqs-queue-driver-bundle)
 
 ## Install
 
