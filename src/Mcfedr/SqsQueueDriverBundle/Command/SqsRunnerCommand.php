@@ -63,8 +63,6 @@ class SqsRunnerCommand extends RunnerCommand
             $waitTime = $this->waitTime;
         }
 
-        var_dump($waitTime);
-
         foreach ($this->urls as $url) {
             $jobs = $this->getJobsFromUrl($url, $waitTime);
             if (count($jobs)) {
