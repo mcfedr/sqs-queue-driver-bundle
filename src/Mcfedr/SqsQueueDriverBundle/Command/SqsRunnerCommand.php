@@ -25,6 +25,11 @@ class SqsRunnerCommand extends RunnerCommand
     private $batchSize = 10;
 
     /**
+     * @var int|null
+     */
+    private $waitTime;
+
+    /**
      * @var string[]
      */
     private $urls;
@@ -42,7 +47,8 @@ class SqsRunnerCommand extends RunnerCommand
             ->addOption('url', null, InputOption::VALUE_REQUIRED, 'The url of SQS queue to run, can be a comma separated list')
             ->addOption('queue', null, InputOption::VALUE_REQUIRED, 'The name of a queue in the config, can be a comma separated list')
             ->addOption('timeout', null, InputOption::VALUE_REQUIRED, 'The visibility timeout for SQS')
-            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Number of messages to fetch at once', 10);
+            ->addOption('batch-size', null, InputOption::VALUE_REQUIRED, 'Number of messages to fetch at once', 10)
+            ->addOption('wait-time', null, InputOption::VALUE_OPTIONAL, 'Wait time between 0-20 seconds');
     }
 
     protected function getJobs()
@@ -51,7 +57,14 @@ class SqsRunnerCommand extends RunnerCommand
             return [];
         }
 
-        $waitTime = count($this->urls) ? 0 : 20;
+        if (is_null($this->waitTime)) {
+            $waitTime = count($this->urls) ? 0 : 20;
+        } else {
+            $waitTime = $this->waitTime;
+        }
+
+        var_dump($waitTime);
+
         foreach ($this->urls as $url) {
             $jobs = $this->getJobsFromUrl($url, $waitTime);
             if (count($jobs)) {
@@ -178,6 +191,10 @@ class SqsRunnerCommand extends RunnerCommand
 
         if (($batch = $input->getOption('batch-size'))) {
             $this->batchSize = $batch;
+        }
+
+        if (($waitTime = $input->getOption('wait-time'))) {
+            $this->waitTime = intval($waitTime);
         }
     }
 }
