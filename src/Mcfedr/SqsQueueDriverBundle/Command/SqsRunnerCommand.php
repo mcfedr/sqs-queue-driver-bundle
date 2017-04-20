@@ -184,15 +184,15 @@ class SqsRunnerCommand extends RunnerCommand
         }
 
         if (($timeout = $input->getOption('timeout'))) {
-            $this->visibilityTimeout = $timeout;
+            $this->visibilityTimeout = (int) $timeout;
         }
 
         if (($batch = $input->getOption('batch-size'))) {
-            $this->batchSize = $batch;
+            $this->batchSize = (int) $batch;
         }
 
         if (($waitTime = $input->getOption('wait-time'))) {
-            $this->waitTime = intval($waitTime);
+            $this->waitTime = (int) $waitTime;
         }
     }
 }
