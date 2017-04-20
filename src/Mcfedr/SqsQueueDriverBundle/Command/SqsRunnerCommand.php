@@ -25,9 +25,9 @@ class SqsRunnerCommand extends RunnerCommand
     private $batchSize = 10;
 
     /**
-     * @var int|null
+     * @var int
      */
-    private $waitTime;
+    private $waitTime = 20;
 
     /**
      * @var string[]
@@ -57,14 +57,8 @@ class SqsRunnerCommand extends RunnerCommand
             return [];
         }
 
-        if (is_null($this->waitTime)) {
-            $waitTime = count($this->urls) ? 0 : 20;
-        } else {
-            $waitTime = $this->waitTime;
-        }
-
         foreach ($this->urls as $url) {
-            $jobs = $this->getJobsFromUrl($url, $waitTime);
+            $jobs = $this->getJobsFromUrl($url);
             if (count($jobs)) {
                 return $jobs;
             }
@@ -73,11 +67,11 @@ class SqsRunnerCommand extends RunnerCommand
         return [];
     }
 
-    private function getJobsFromUrl($url, $waitTime)
+    private function getJobsFromUrl($url)
     {
         $response = $this->sqs->receiveMessage([
             'QueueUrl' => $url,
-            'WaitTimeSeconds' => $waitTime,
+            'WaitTimeSeconds' => $this->waitTime,
             'VisibilityTimeout' => $this->visibilityTimeout,
             'MaxNumberOfMessages' => $this->batchSize
         ]);
@@ -181,6 +175,10 @@ class SqsRunnerCommand extends RunnerCommand
             }, explode(',', $queue));
         } else {
             $this->urls = [$this->defaultUrl];
+        }
+
+        if (count($this->urls) > 1) {
+            $this->waitTime = 0;
         }
 
         if (($timeout = $input->getOption('timeout'))) {
