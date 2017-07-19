@@ -6,6 +6,17 @@ A driver for [Queue Manager Bundle](https://github.com/mcfedr/queue-manager-bund
 [![License](https://poser.pugx.org/mcfedr/sqs-queue-driver-bundle/license.png)](https://packagist.org/packages/mcfedr/sqs-queue-driver-bundle)
 [![Build Status](https://travis-ci.org/mcfedr/sqs-queue-driver-bundle.svg?branch=master)](https://travis-ci.org/mcfedr/sqs-queue-driver-bundle)
 
+## Usage
+
+The sqs runner is a Symfony command. You can runner multiple instances if you need to
+handle higher numbers of jobs.
+
+```bash
+./bin/console mcfedr:queue:{name}-runner
+```
+
+Where `{name}` is what you used in the config. Add `-v` or more to get detailed logs.
+
 ## Install
 
 ### Composer
