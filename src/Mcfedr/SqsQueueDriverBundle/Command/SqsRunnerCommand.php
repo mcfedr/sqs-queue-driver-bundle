@@ -73,7 +73,7 @@ class SqsRunnerCommand extends RunnerCommand
             'QueueUrl' => $url,
             'WaitTimeSeconds' => $this->waitTime,
             'VisibilityTimeout' => $this->visibilityTimeout,
-            'MaxNumberOfMessages' => $this->batchSize
+            'MaxNumberOfMessages' => $this->batchSize,
         ]);
 
         if (isset($response['Messages'])) {
@@ -102,16 +102,16 @@ class SqsRunnerCommand extends RunnerCommand
 
                         return [
                             'Id' => "E{$count}",
-                            'ReceiptHandle' => $handle
+                            'ReceiptHandle' => $handle,
                         ];
-                    }, $toDelete)
+                    }, $toDelete),
                 ]);
             }
 
             if ($exception) {
                 if (count($jobs)) {
                     $this->logger && $this->logger->warning('Found unexpected job data in the queue', [
-                        'message' => $exception->getMessage()
+                        'message' => $exception->getMessage(),
                     ]);
                 } else {
                     throw $exception;
@@ -141,9 +141,9 @@ class SqsRunnerCommand extends RunnerCommand
                     return [
                         'Id' => "R{$count}",
                         'MessageBody' => $job->getMessageBody(),
-                        'DelaySeconds' => min($this->getRetryDelaySeconds($job->getRetryCount()), 900) //900 is the max delay
+                        'DelaySeconds' => min($this->getRetryDelaySeconds($job->getRetryCount()), 900), //900 is the max delay
                     ];
-                }, $retryJobs)
+                }, $retryJobs),
             ]);
         }
 
@@ -158,9 +158,9 @@ class SqsRunnerCommand extends RunnerCommand
 
                     return [
                         'Id' => "J{$count}",
-                        'ReceiptHandle' => $job->getReceiptHandle()
+                        'ReceiptHandle' => $job->getReceiptHandle(),
                     ];
-                }, array_merge($okJobs, $retryJobs, $failedJobs))
+                }, array_merge($okJobs, $retryJobs, $failedJobs)),
             ]);
         }
     }

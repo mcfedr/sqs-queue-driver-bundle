@@ -28,7 +28,7 @@ class SqsQueueManager implements QueueManager
         }
 
         $sendMessage = [
-            'QueueUrl' => $url
+            'QueueUrl' => $url,
         ];
 
         $delay = null;

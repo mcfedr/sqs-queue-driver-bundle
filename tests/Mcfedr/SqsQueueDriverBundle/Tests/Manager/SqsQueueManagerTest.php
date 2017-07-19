@@ -19,7 +19,7 @@ class SqsQueueManagerTest extends \PHPUnit_Framework_TestCase
             'default_url' => 'http://sqs.com',
             'region' => 'eu-west-1',
             'debug' => true,
-            'queues' => []
+            'queues' => [],
         ]);
     }
 

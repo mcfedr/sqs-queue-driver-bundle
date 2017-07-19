@@ -93,7 +93,7 @@ class SqsJob extends AbstractRetryableJob
         return json_encode([
             'name' => $this->getName(),
             'arguments' => $this->getArguments(),
-            'retryCount' => $this->getRetryCount()
+            'retryCount' => $this->getRetryCount(),
         ]);
     }
 }

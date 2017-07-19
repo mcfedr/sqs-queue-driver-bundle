@@ -37,7 +37,7 @@ trait SqsClientTrait
         if (!$this->debug) {
             $sqsOptions = [
                 'region' => $options['region'],
-                'version' => '2012-11-05'
+                'version' => '2012-11-05',
             ];
             if (array_key_exists('credentials', $options)) {
                 $sqsOptions['credentials'] = $options['credentials'];
