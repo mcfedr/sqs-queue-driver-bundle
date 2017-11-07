@@ -1,0 +1,33 @@
+framework:
+    test: ~
+    session:
+        storage_id: session.storage.mock_file
+    secret: 'fake_secret'
+
+mcfedr_queue_manager:
+    managers:
+        manager_1:
+            driver: sqs
+            options:
+                default_url: 'http://sqs.com'
+                region: 'eu-west-1'
+                debug: true
+        manager_2:
+            driver: sqs
+            options:
+                default_url: 'http://sqs.com'
+                region: 'eu-west-1'
+                debug: true
+
+monolog:
+    handlers:
+        main:
+            type: console
+            verbosity_levels:
+                VERBOSITY_NORMAL: DEBUG
+
+services:
+    test_worker:
+        class: Mcfedr\SqsQueueDriverBundle\Worker\TestWorker
+        arguments:
+            - "@logger"
