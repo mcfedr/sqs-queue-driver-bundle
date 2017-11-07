@@ -21,7 +21,7 @@ env:
 
 before_script:
     - |
-        sed -i 's,"symfony/symfony": "\^2.8|\^3.0","symfony/symfony": "$SYMFONY_VER",g' composer.json
+        sed -i 's,"symfony/symfony": "\^2.8|\^3.0","symfony/symfony": "'$SYMFONY_VER'",g' composer.json
     - composer update $COMPOSER_FLAGS
 
 script:
