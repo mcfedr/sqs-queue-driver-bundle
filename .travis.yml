@@ -20,7 +20,8 @@ env:
     - APP_ENV=multiple_managers EXCLUDE_TEST_GROUPS=test,non_default_manager COMPOSER_FLAGS=--prefer-lowest SYMFONY_VER=3.3.0
 
 before_script:
-    - sed -i 's,"symfony/symfony": "^2.8|^3.0","symfony/symfony": "$SYMFONY_VER",g' composer.json
+    - |
+        sed -i 's,"symfony/symfony": "\^2.8|\^3.0","symfony/symfony": "$SYMFONY_VER",g' composer.json
     - composer update $COMPOSER_FLAGS
 
 script:
