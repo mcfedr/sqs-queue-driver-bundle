@@ -5,10 +5,25 @@ php:
     - 5.6
     - 7.0
     - 7.1
+env:
+    - APP_ENV=test EXCLUDE_TEST_GROUPS=non_default_manager,multiple_managers COMPOSER_FLAGS= QUEUE_MANAGER_VER=5.6.1
+    - APP_ENV=test EXCLUDE_TEST_GROUPS=non_default_manager,multiple_managers COMPOSER_FLAGS= QUEUE_MANAGER_VER=5.7.1
+    - APP_ENV=test EXCLUDE_TEST_GROUPS=non_default_manager,multiple_managers COMPOSER_FLAGS=--prefer-lowest QUEUE_MANAGER_VER=5.6.1
+    - APP_ENV=test EXCLUDE_TEST_GROUPS=non_default_manager,multiple_managers COMPOSER_FLAGS=--prefer-lowest QUEUE_MANAGER_VER=5.7.1
+    - APP_ENV=non_default_manager EXCLUDE_TEST_GROUPS=test,multiple_managers COMPOSER_FLAGS= QUEUE_MANAGER_VER=5.6.1
+    - APP_ENV=non_default_manager EXCLUDE_TEST_GROUPS=test,multiple_managers COMPOSER_FLAGS= QUEUE_MANAGER_VER=5.7.1
+    - APP_ENV=non_default_manager EXCLUDE_TEST_GROUPS=test,multiple_managers COMPOSER_FLAGS=--prefer-lowest QUEUE_MANAGER_VER=5.6.1
+    - APP_ENV=non_default_manager EXCLUDE_TEST_GROUPS=test,multiple_managers COMPOSER_FLAGS=--prefer-lowest QUEUE_MANAGER_VER=5.7.1
+    - APP_ENV=multiple_managers EXCLUDE_TEST_GROUPS=test,non_default_manager COMPOSER_FLAGS= QUEUE_MANAGER_VER=5.6.1
+    - APP_ENV=multiple_managers EXCLUDE_TEST_GROUPS=test,non_default_manager COMPOSER_FLAGS= QUEUE_MANAGER_VER=5.7.1
+    - APP_ENV=multiple_managers EXCLUDE_TEST_GROUPS=test,non_default_manager COMPOSER_FLAGS=--prefer-lowest QUEUE_MANAGER_VER=5.6.1
+    - APP_ENV=multiple_managers EXCLUDE_TEST_GROUPS=test,non_default_manager COMPOSER_FLAGS=--prefer-lowest QUEUE_MANAGER_VER=5.7.1
 
 before_script:
-    - composer install
+    - |
+        sed -i 's,"mcfedr/queue-manager-bundle": "\^5\.2","mcfedr/queue-manager-bundle": "'$QUEUE_MANAGER_VER'",g' composer.json
+    - composer update $COMPOSER_FLAGS
 
 script:
     - ./vendor/bin/php-cs-fixer fix --dry-run --diff
-    - ./vendor/bin/phpunit
+    - ./vendor/bin/phpunit --exclude-group=$EXCLUDE_TEST_GROUPS
