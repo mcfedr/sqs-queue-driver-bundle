@@ -46,7 +46,7 @@ class SqsQueueManager implements QueueManager
 
         $sendMessage['MessageBody'] = $job->getMessageBody();
 
-        $result = $this->sqs->sendMessage($sendMessage);
+        $result = $this->getSqs()->sendMessage($sendMessage);
         $job->setId($result['MessageId']);
 
         return $job;

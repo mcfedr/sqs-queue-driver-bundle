@@ -69,7 +69,7 @@ class SqsRunnerCommand extends RunnerCommand
 
     private function getJobsFromUrl($url)
     {
-        $response = $this->sqs->receiveMessage([
+        $response = $this->getSqs()->receiveMessage([
             'QueueUrl' => $url,
             'WaitTimeSeconds' => $this->waitTime,
             'VisibilityTimeout' => $this->visibilityTimeout,
@@ -95,7 +95,7 @@ class SqsRunnerCommand extends RunnerCommand
 
             if (count($toDelete)) {
                 $count = 0;
-                $this->sqs->deleteMessageBatch([
+                $this->getSqs()->deleteMessageBatch([
                     'QueueUrl' => $url,
                     'Entries' => array_map(function ($handle) use (&$count) {
                         ++$count;
@@ -132,7 +132,7 @@ class SqsRunnerCommand extends RunnerCommand
 
         if (count($retryJobs)) {
             $count = 0;
-            $this->sqs->sendMessageBatch([
+            $this->getSqs()->sendMessageBatch([
                 'QueueUrl' => $retryJobs[0]->getUrl(),
                 'Entries' => array_map(function (SqsJob $job) use (&$count) {
                     ++$count;
@@ -151,7 +151,7 @@ class SqsRunnerCommand extends RunnerCommand
         $allJobs = array_merge($okJobs, $retryJobs, $failedJobs);
         if (count($allJobs)) {
             $count = 0;
-            $this->sqs->deleteMessageBatch([
+            $this->getSqs()->deleteMessageBatch([
                 'QueueUrl' => $allJobs[0]->getUrl(),
                 'Entries' => array_map(function (SqsJob $job) use (&$count) {
                     ++$count;

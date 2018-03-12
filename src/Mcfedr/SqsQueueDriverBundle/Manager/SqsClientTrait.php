@@ -4,6 +4,9 @@ namespace Mcfedr\SqsQueueDriverBundle\Manager;
 
 use Aws\Sqs\SqsClient;
 
+/**
+ * @internal
+ */
 trait SqsClientTrait
 {
     /**
@@ -20,6 +23,11 @@ trait SqsClientTrait
      * @var SqsClient
      */
     private $sqs;
+
+    /**
+     * @var array
+     */
+    private $sqsOptions;
 
     /**
      * @var string[]
@@ -42,7 +50,16 @@ trait SqsClientTrait
             if (array_key_exists('credentials', $options)) {
                 $sqsOptions['credentials'] = $options['credentials'];
             }
-            $this->sqs = new SqsClient($sqsOptions);
+            $this->sqsOptions = $sqsOptions;
         }
+    }
+
+    private function getSqs()
+    {
+        if (!$this->sqs) {
+            $this->sqs = new SqsClient($this->sqsOptions);
+        }
+
+        return $this->sqs;
     }
 }
