@@ -27,6 +27,11 @@ class SqsJob extends AbstractRetryableJob
     private $receiptHandle;
 
     /**
+     * @var int
+     */
+    private $visibilityTimeout;
+
+    /**
      * @param string $name
      * @param array  $arguments
      * @param string $id
@@ -34,14 +39,16 @@ class SqsJob extends AbstractRetryableJob
      * @param string $url
      * @param int    $retryCount
      * @param string $receiptHandle
+     * @param int    $visibilityTimeout
      */
-    public function __construct($name, $arguments, $delay, $url, $id = null, $retryCount = 0, $receiptHandle = null)
+    public function __construct($name, $arguments, $delay, $url, $id = null, $retryCount = 0, $receiptHandle = null, $visibilityTimeout = null)
     {
         parent::__construct($name, $arguments, $retryCount);
         $this->id = $id;
         $this->delay = $delay;
         $this->url = $url;
         $this->receiptHandle = $receiptHandle;
+        $this->visibilityTimeout = $visibilityTimeout;
     }
 
     /**
@@ -88,12 +95,21 @@ class SqsJob extends AbstractRetryableJob
         return $this->receiptHandle;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getVisibilityTimeout()
+    {
+        return $this->visibilityTimeout;
+    }
+
     public function getMessageBody()
     {
         return json_encode([
             'name' => $this->getName(),
             'arguments' => $this->getArguments(),
             'retryCount' => $this->getRetryCount(),
+            'visibilityTimeout' => $this->getVisibilityTimeout(),
         ]);
     }
 }
