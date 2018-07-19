@@ -27,6 +27,11 @@ class SqsQueueManager implements QueueManager
             $url = $this->defaultUrl;
         }
 
+        $visibilityTimeout = null;
+        if (isset($options['visibilityTimeout'])) {
+            $visibilityTimeout = $options['visibilityTimeout'];
+        }
+
         $sendMessage = [
             'QueueUrl' => $url,
         ];
@@ -38,7 +43,7 @@ class SqsQueueManager implements QueueManager
             $sendMessage['DelaySeconds'] = $delay = $options['delay'];
         }
 
-        $job = new SqsJob($name, $arguments, $delay, $url);
+        $job = new SqsJob($name, $arguments, $delay, $url, null, 0, null, $visibilityTimeout);
 
         if ($this->debug) {
             return $job;

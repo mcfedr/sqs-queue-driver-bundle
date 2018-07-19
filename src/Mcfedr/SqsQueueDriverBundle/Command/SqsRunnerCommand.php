@@ -90,7 +90,17 @@ class SqsRunnerCommand extends RunnerCommand
                     continue;
                 }
 
-                $jobs[] = new SqsJob($data['name'], $data['arguments'], 0, $url, $message['MessageId'], $data['retryCount'], $message['ReceiptHandle']);
+                $visibilityTimeout = null;
+                if (isset($data['visibilityTimeout']) && $data['visibilityTimeout']) {
+                    $visibilityTimeout = $data['visibilityTimeout'];
+                    $this->sqs->changeMessageVisibility([
+                        'QueueUrl' => $url,
+                        'ReceiptHandle' => $message['ReceiptHandle'],
+                        'VisibilityTimeout' => $visibilityTimeout,
+                    ]);
+                }
+
+                $jobs[] = new SqsJob($data['name'], $data['arguments'], 0, $url, $message['MessageId'], $data['retryCount'], $message['ReceiptHandle'], $visibilityTimeout);
             }
 
             if (count($toDelete)) {
