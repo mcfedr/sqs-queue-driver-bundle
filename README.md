@@ -66,3 +66,4 @@ This will create a `QueueManager` service named `"mcfedr_queue_manager.default"`
 * `queue` - A `string` with the name of a queue in the config
 * `time` - A `\DateTime` object of when to schedule this job. **Note:** SQS can delay jobs up to 15 minutes 
 * `delay` - Number of seconds from now to schedule this job. **Note:** SQS can delay jobs up to 15 minutes
+* `visibilityTimeout` - Number of seconds during which Amazon SQS prevents other consumers from receiving and processing the message.

@@ -91,7 +91,7 @@ class SqsRunnerCommand extends RunnerCommand
                 }
 
                 $visibilityTimeout = null;
-                if (isset($data['visibilityTimeout']) && $data['visibilityTimeout']) {
+                if (isset($data['visibilityTimeout'])) {
                     $visibilityTimeout = $data['visibilityTimeout'];
                     $this->sqs->changeMessageVisibility([
                         'QueueUrl' => $url,
